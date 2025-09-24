@@ -401,6 +401,25 @@ else
 end
 disp('Done');
 
+% Ensure cortex has Faces field for plotting
+% If not available, try to load from standard cortex.mat file
+if ~isfield(cortex, 'Faces')
+    try
+        % Try to load high-resolution cortex with faces for plotting
+        % This file should contain cortex_highres with Faces field
+        cortex_file = load('cortex.mat');
+        if isfield(cortex_file, 'cortex_highres') && isfield(cortex_file.cortex_highres, 'Faces')
+            % Copy the Faces field from high-resolution cortex
+            cortex.Faces = cortex_file.cortex_highres.Faces;
+            fprintf('Added Faces field from high-resolution cortex for surface plotting.\n');
+        end
+    catch
+        % If cortex.mat cannot be loaded, continue without Faces field
+        % User will get a warning when trying to plot
+        fprintf('Warning: Could not load cortex.mat to add Faces field for surface plotting.\n');
+    end
+end
+
 % Output paramters
 EEG.roi.cortex    = cortex;
 EEG.roi.atlas     = cortex.Atlas.Scouts;
