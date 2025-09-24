@@ -65,7 +65,7 @@ end
 % ----------------------------------------
 try
     curroiFlag = evalin('base', 'unique(cellfun(@(x)getfield(x, ''eeglab_using_roi''), { ALLEEG(:).roi }));');
-    if length(curroiFlag) ~= 1 && curroiFlag
+    if length(curroiFlag) ~= 1
         disp('Warning: different settings for using ROIs detected in different datasets');
     end
 catch
