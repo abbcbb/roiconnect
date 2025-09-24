@@ -14,6 +14,7 @@ if length(data_in) == size(cortex.Vertices, 1)
     data = data_in;
 else
     % find Atlas with the same number of ROIs
+    data = []; % Initialize data to detect if no matching atlas is found
     for iatl = 1:length(cortex.Atlas)
         if length(data_in) == length(cortex.Atlas(iatl).Scouts)
             data = nan*ones(size(cortex.Vertices, 1), 1);
@@ -22,6 +23,12 @@ else
             end
             break;
         end
+    end
+    
+    % Check if no matching atlas was found
+    if isempty(data)
+        error('No atlas found with %d ROIs matching the input data length. Available atlases have: %s ROIs.', ...
+            length(data_in), mat2str(cellfun(@(x) length(x.Scouts), num2cell(cortex.Atlas))));
     end
 end
 

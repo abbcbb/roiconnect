@@ -3,11 +3,19 @@ function allplots_cortex(cortex, data_in, colorlimits, cm, unit, smooth, printfo
 if length(data_in) == size(cortex.vc, 1)
   data = data_in;
 else
+  data = []; % Initialize data to detect if no matching condition is met
   if length(data_in) == length(unique(cortex.in_HO)) || length(data_in) == length(unique(cortex.in_HO))-1
     data = nan*ones(size(cortex.vc, 1), 1);
     for iroi = 1:length(data_in)
       data(find(cortex.in_HO == iroi)) = data_in(iroi);
     end
+  end
+  
+  % Check if no matching condition was met
+  if isempty(data)
+    unique_regions = length(unique(cortex.in_HO));
+    error('Input data length (%d) does not match cortex vertex count (%d) or region count (%d or %d).', ...
+        length(data_in), size(cortex.vc, 1), unique_regions, unique_regions-1);
   end
 end
 
