@@ -401,6 +401,31 @@ else
 end
 disp('Done');
 
+% Ensure cortex has Faces field for plotting
+% If not available, try to load from standard cortex.mat file
+if ~isfield(cortex, 'Faces')
+    try
+        % Find cortex.mat in the roiconnect plugin directory
+        roiconnect_path = fileparts(which('pop_roi_connectplot'));
+        cortex_file_path = fullfile(roiconnect_path, 'cortex.mat');
+        
+        if exist(cortex_file_path, 'file')
+            cortex_file = load(cortex_file_path);
+            if isfield(cortex_file, 'cortex_highres') && isfield(cortex_file.cortex_highres, 'Faces')
+                % Copy the Faces field from high-resolution cortex
+                cortex.Faces = cortex_file.cortex_highres.Faces;
+                fprintf('Added Faces field from high-resolution cortex for surface plotting.\n');
+            end
+        else
+            fprintf('Note: cortex.mat not found. Surface plotting may be limited.\n');
+        end
+    catch ME
+        % If cortex.mat cannot be loaded, continue without Faces field
+        % User will get a warning when trying to plot
+        fprintf('Warning: Could not load cortex.mat (%s). Surface plotting may be limited.\n', ME.message);
+    end
+end
+
 % Output paramters
 EEG.roi.cortex    = cortex;
 EEG.roi.atlas     = cortex.Atlas.Scouts;
