@@ -21,11 +21,11 @@ for iNet = 1:length(networkNames)-3
             if areaNameTmp(end) ~= 'L' && areaNameTmp(end) ~= 'R'
                 areaNameTmp1 = [ areaNameTmp '_R' ];
                 areaNameTmp2 = [ areaNameTmp '_L' ];
-                colPos1 = strmatch(areaNameTmp1, allAreasNames, 'exact');
-                colPos2 = strmatch(areaNameTmp2, allAreasNames, 'exact');
+                colPos1 = find(strcmp(areaNameTmp1, allAreasNames));
+                colPos2 = find(strcmp(areaNameTmp2, allAreasNames));
                 addAreaList = { addAreaList{:} allAreas{:,colPos1}{:} allAreas{:,colPos2}{:} };
             else
-                colPos = strmatch(areaNameTmp, allAreasNames, 'exact');
+                colPos = find(strcmp(areaNameTmp, allAreasNames));
                 addAreaList = { addAreaList{:} allAreas{:,colPos}{:} };
             end
         end

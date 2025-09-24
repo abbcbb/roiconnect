@@ -73,7 +73,12 @@ else
     % variance explained
     vx_ = cumsum(diag(S_).^2)./sum(diag(S_).^2);
     if nPCA < 1
-        nPCAs = min(find(vx_ > nPCA));
+        indices = find(vx_ > nPCA);
+        if isempty(indices)
+            nPCAs = length(vx_); % use all components if none exceed threshold
+        else
+            nPCAs = min(indices);
+        end
     else
         nPCAs = nPCA;
     end
