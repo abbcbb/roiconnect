@@ -577,7 +577,12 @@ function [matrix, com] = pop_roi_connectplot(EEG, varargin)
             else
                 cortexTitle = [ cortexTitle ' for area ' int2str(seed_idx)];
                 cortexPlot = squeeze(matrix(seed_idx,:));
-                allplots_cortex_BS(S.cortex, cortexPlot, [min(cortexPlot) max(cortexPlot)], cm17a, g.measure, g.smooth, [], {coordinate});
+                % Use high-resolution cortex if S.cortex doesn't have Faces field
+                if isfield(S.cortex, 'Faces')
+                    allplots_cortex_BS(S.cortex, cortexPlot, [min(cortexPlot) max(cortexPlot)], cm17a, g.measure, g.smooth, [], {coordinate});
+                else
+                    allplots_cortex_BS(cortex_highres, cortexPlot, [min(cortexPlot) max(cortexPlot)], cm17a, g.measure, g.smooth, [], {coordinate});
+                end
 %                 allplots_cortex_BS(cortex_highres, cortexPlot, [min(cortexPlot) max(cortexPlot)], cm17a, upper(g.measure), g.smooth, [], {coordinate});
 %                 allplots_cortex_BS(S.cortex, cortexPlot, [min(cortexPlot) max(cortexPlot)], cm17a, plotOpt.unit, g.smooth, [], {coordinate});
             end
