@@ -37,19 +37,33 @@ end
 % cortex.Vertices(:, 1) = -cortex.Vertices(:, 1);
 
 % Ensure valid color limits for plotting
-colorlimits = double(colorlimits(:)');
-finiteData = data(:);
-finiteData = finiteData(isfinite(finiteData));
-if numel(colorlimits) ~= 2 || any(isnan(colorlimits)) || colorlimits(1) >= colorlimits(2)
+if isnumeric(colorlimits)
+    colorlimits = double(colorlimits(:)');
+else
+    colorlimits = [];
+end
+invalidSize = numel(colorlimits) ~= 2;
+hasNaN = any(isnan(colorlimits));
+hasInfinite = any(~isfinite(colorlimits));
+invalidRange = false;
+if ~invalidSize && ~hasNaN && ~hasInfinite
+    invalidRange = colorlimits(1) >= colorlimits(2);
+end
+if invalidSize || hasNaN || hasInfinite || invalidRange
+    finiteData = data(:);
+    finiteData = finiteData(isfinite(finiteData));
     if isempty(finiteData)
+        % Default to a positive range when no finite data is available
         colorlimits = [0 1];
     else
         colorlimits = [min(finiteData) max(finiteData)];
     end
 end
 if colorlimits(1) == colorlimits(2)
-    pad = eps(max(abs(colorlimits(1)), 1));
-    colorlimits(2) = colorlimits(2) + pad;
+    % Pad symmetrically by machine epsilon at the scale of the limits (minimum epsFloor) to guarantee an ordered CLim vector
+    epsFloor = 1;
+    pad = eps(max([abs(colorlimits(:)); epsFloor]));
+    colorlimits = colorlimits + [-pad/2, pad/2];
 end
 
 
