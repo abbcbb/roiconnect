@@ -11,7 +11,7 @@
 %  'sourcemodel' - [string] source model file
 %
 % Optional inputs:
-%  'measure'              - ['psd'|'roipsd'|'trgc'|'crossspecimag'|'crossspecpow'|'mic'|'mim'|'wpli']
+%  'measure'              - ['psd'|'roipsd'|'trgc'|'crossspecimag'|'crossspecpow'|'mic'|'mim']
 %                           'psd'   : Source power spectrum
 %                           'psdroi': ROI based power spectrum
 %                           'TRGC'  : Time-reversed granger causality
@@ -20,7 +20,6 @@
 %                           'crossspecpow' : Average cross-spectrum power for each ROI
 %                           'aCOH': Coherence 
 %                           'iCOH': Absolute value of the imaginary part of Coherency
-%                           'wPLI'  : Weighted Phase Lag Index
 %                           'MIC' : Maximized Imaginary Coherency for each ROI
 %                           'MIM' : Multivariate Interaction Measure for each ROI
 %                           'PAC' : Phase-amplitude coupling for a certain frequency (band) combination based on bicoherence
@@ -179,17 +178,6 @@ function [matrix, com] = pop_roi_connectplot(EEG, varargin)
         splot(end  ).labelshort = 'Img. part of Coherency';
         splot(end  ).acronym  = 'iCOH';
         splot(end  ).unit   = 'iCOH';
-        splot(end  ).cortex = cortexFlag;
-        splot(end  ).matrix = 1;
-        splot(end  ).psd    = -1;
-        splot(end  ).plot3d = plot3dFlag;
-    end
-
-    if isfield(EEG.roi, 'wPLI')
-        splot(end+1).label    = 'ROI to ROI Weighted Phase Lag Index';
-        splot(end  ).labelshort = 'Weighted Phase Lag Index';
-        splot(end  ).acronym  = 'wPLI';
-        splot(end  ).unit   = 'wPLI';
         splot(end  ).cortex = cortexFlag;
         splot(end  ).matrix = 1;
         splot(end  ).psd    = -1;
@@ -476,16 +464,13 @@ function [matrix, com] = pop_roi_connectplot(EEG, varargin)
                 matrix = squeeze(mean(MI(frq_inds, :, :), 1));
                 cortexPlot = mean(matrix, 2);
             
-            case { 'acoh' 'ccoh' 'icoh' 'wpli'}
+            case { 'acoh' 'ccoh' 'icoh'}
                 if strcmpi(g.measure, 'aCOH')
                     butterflyplot = squeeze(mean(S.aCOH, 2));
                     matrix = squeeze(mean(S.aCOH(frq_inds, :, :), 1));
                 elseif strcmpi(g.measure, 'cCOH')
                     error(['Complex values are not supported. To plot the absolute values, compute "aCOH", ' ...
                         'to plot the imaginary part, compute "iCOH".'])
-                elseif strcmpi(g.measure, 'wpli')
-                    butterflyplot = squeeze(mean(S.wPLI, 2));
-                    matrix = squeeze(mean(S.wPLI(frq_inds, :, :), 1));
                 else
                     butterflyplot = squeeze(mean(S.iCOH, 2));
                     matrix = squeeze(mean(S.iCOH(frq_inds, :, :), 1));
