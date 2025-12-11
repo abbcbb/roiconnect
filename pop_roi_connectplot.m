@@ -20,6 +20,7 @@
 %                           'crossspecpow' : Average cross-spectrum power for each ROI
 %                           'aCOH': Coherence 
 %                           'iCOH': Absolute value of the imaginary part of Coherency
+%                           'wPLI' : Weighted Phase Lag Index
 %                           'MIC' : Maximized Imaginary Coherency for each ROI
 %                           'MIM' : Multivariate Interaction Measure for each ROI
 %                           'PAC' : Phase-amplitude coupling for a certain frequency (band) combination based on bicoherence
@@ -178,6 +179,17 @@ function [matrix, com] = pop_roi_connectplot(EEG, varargin)
         splot(end  ).labelshort = 'Img. part of Coherency';
         splot(end  ).acronym  = 'iCOH';
         splot(end  ).unit   = 'iCOH';
+        splot(end  ).cortex = cortexFlag;
+        splot(end  ).matrix = 1;
+        splot(end  ).psd    = -1;
+        splot(end  ).plot3d = plot3dFlag;
+    end
+
+    if isfield(EEG.roi, 'wPLI')
+        splot(end+1).label    = 'ROI to ROI Weighted Phase Lag Index';
+        splot(end  ).labelshort = 'Weighted Phase Lag Index';
+        splot(end  ).acronym  = 'wPLI';
+        splot(end  ).unit   = 'wPLI';
         splot(end  ).cortex = cortexFlag;
         splot(end  ).matrix = 1;
         splot(end  ).psd    = -1;
@@ -475,6 +487,11 @@ function [matrix, com] = pop_roi_connectplot(EEG, varargin)
                     butterflyplot = squeeze(mean(S.iCOH, 2));
                     matrix = squeeze(mean(S.iCOH(frq_inds, :, :), 1));
                 end
+                cortexPlot = mean(matrix, 2);
+
+            case { 'wpli' }
+                butterflyplot = squeeze(mean(S.wPLI, 2));
+                matrix = squeeze(mean(S.wPLI(frq_inds, :, :), 1));
                 cortexPlot = mean(matrix, 2);
 
             case { 'crossspecpow' 'coh' 'crossspecimag' }
