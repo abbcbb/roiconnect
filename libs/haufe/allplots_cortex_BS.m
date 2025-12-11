@@ -36,6 +36,22 @@ end
 % cortex.Vertices = cortex.Vertices(:, [2 1 3]);
 % cortex.Vertices(:, 1) = -cortex.Vertices(:, 1);
 
+% Ensure valid color limits for plotting
+colorlimits = double(colorlimits(:)');
+finiteData = data(:);
+finiteData = finiteData(isfinite(finiteData));
+if numel(colorlimits) ~= 2 || any(isnan(colorlimits)) || colorlimits(1) >= colorlimits(2)
+    if isempty(finiteData)
+        colorlimits = [0 1];
+    else
+        colorlimits = [min(finiteData) max(finiteData)];
+    end
+end
+if colorlimits(1) == colorlimits(2)
+    pad = eps(max(abs(colorlimits(1)), 1));
+    colorlimits(2) = colorlimits(2) + pad;
+end
+
 
 for iatl = 1:length(cortex.Atlas)
     if isequal(cortex.Atlas(iatl).Name, 'Structures')
