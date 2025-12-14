@@ -431,6 +431,7 @@ function [matrix, com] = pop_roi_connectplot(EEG, varargin)
         roi_largeplot(EEG, MIM_matrix, TRGC_matrix, source_roi_power_norm_dB, titleStr)
     else     
         matrix = [];
+        cortexPlot = [];
         switch lower(g.measure)
             case { 'psd' 'roipsd' }
                 if strcmpi(g.measure, 'psd')
