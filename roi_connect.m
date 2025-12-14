@@ -140,6 +140,7 @@ function EEG = roi_connect(EEG, varargin)
             else % wPLI
                 warning(strcat("Only the first principal component will be used to determine ", tmpMethods1{iMethods}))
                 measure = rm_components(EEG.roi.(tmpMethods1{iMethods}), EEG.roi.nPCA); % only keep the first principal component
+                measure(isnan(measure)) = 0; % Replace NaN values with 0
                 EEG.roi.(tmpMethods1{iMethods}) = measure;
             end
         end
