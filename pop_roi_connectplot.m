@@ -584,7 +584,7 @@ function [matrix, com] = pop_roi_connectplot(EEG, varargin)
 
         % plot on cortical surface
         if strcmpi(g.plotcortex, 'on') && cortexFlag ~= -1
-            if ~strcmpi(g.measure, 'gc') || ~strcmpi(g.measure, 'trgc')
+            if ~strcmpi(g.measure, 'gc') && ~strcmpi(g.measure, 'trgc')
                 cortexTitle = [ plotOpt.labelshort ' (' titleStr ')' ];
             end
             if isempty(g.plotcortexseedregion)
